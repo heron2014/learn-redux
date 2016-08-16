@@ -15,17 +15,30 @@ var reducer = (state = {name: 'Annonymous'}, action) => {
   }
 }
 
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+  window.devToolsExtension ? window.devToolsExtension() :  f => f
+));
 
 var currentState = store.getState();
 console.log('currentState', currentState);
 
+var unsubscribe = store.subscribe(() => {
+  var state = store.getState();
+  console.log('Name is ', state.name);
+});
+
 //create action which is an object with prop type..
-var action = {
+var action1 = {
   type: 'CHANGE_NAME',
   name: 'Anita'
 }
 
+var action2 = {
+  type: 'CHANGE_NAME',
+  name: 'Ewa'
+}
+
 //dispatch action
-store.dispatch(action); //you can add action object dynamicllay in dispatch method
-console.log('name should be anita', store.getState());
+store.dispatch(action1); //you can add action object dynamicllay in dispatch method
+// unsubscribe();
+store.dispatch(action2)
