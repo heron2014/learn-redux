@@ -87,8 +87,6 @@ var removeMovie = (id) => {
   }
 };
 
-
-
 var reducer = redux.combineReducers({
   name: nameReducer, //we tell redux that the state name will be manage by nameReducer
   hobbies: hobbiesReducer,
