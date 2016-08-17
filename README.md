@@ -220,6 +220,6 @@ export const configure = () => {
 
 - example.js
 
-- require actions, store
-- subscribe
-- dispatch actions
+  - require actions, store
+  - subscribe
+  - dispatch actions
