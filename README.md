@@ -4,8 +4,8 @@ Redux notes (WIP)
 
 Reducers are **pure functions**.
 - output is the same as input (predictable)
-- no side effects, can't pass any values from outside the function etc..
-- no sync methods, callbacks., promises etc
+- no side effects
+- no sync methods, callbacks, promises etc
 
 ```js
 
@@ -31,7 +31,7 @@ let reducer = (state = stateDefault, action) => {
 Break reducer into more managable small reducers
 
 ```js
-var reducer = redux.combineReducers({
+let reducer = redux.combineReducers({
   name: nameReducer, //we tell redux that the state name will be managed by nameReducer
   hobbies: hobbiesReducer, // we tell redux that state - hobbies will be managed by hobbiesReducer
   movies: moviesReducer
@@ -42,7 +42,7 @@ var reducer = redux.combineReducers({
 - pure plain object, with required property **type**
 
 ```js
-export var changeName = (name) => {
+export let changeName = (name) => {
   return {
     type: 'CHANGE_NAME',
     name
@@ -63,7 +63,7 @@ Subscribe takes one argument which is callback that gets called when the state h
 
 ```js
 store.subscribe(() => {
-  var state = store.getState();
+  let state = store.getState();
 
   console.log('New state', store.getState());
 });
@@ -76,7 +76,7 @@ store.subscribe(() => {
 - enable redux dev tool in your application
 
 ```js
-var store = redux.createStore(reducer, redux.compose(
+let store = redux.createStore(reducer, redux.compose(
   window.devToolsExtension ? window.devToolsExtension() :  f => f
 ));
 
@@ -101,7 +101,7 @@ store.dispatch(changeName('Anita'));
 #### Asynchronous actions (use redux-thunk)
 
 ```js
-var mapReducer = (state = {isFetching: false, url: null}, action) => {
+let mapReducer = (state = {isFetching: false, url: null}, action) => {
   switch (action.type) {
   case 'START_LOCATION_FETCH':
     return {
@@ -118,32 +118,32 @@ var mapReducer = (state = {isFetching: false, url: null}, action) => {
   }
 }
 
-var startLocationFetch = () => {
+let startLocationFetch = () => {
   return {
     type: 'START_LOCATION_FETCH'
   }
 }
 
-var completeLocationFetch = (url) => {
+let completeLocationFetch = (url) => {
   return {
     type: 'COMPLETE_LOCATION_FETCH',
     url
   }
 }
 
-var fetchLocation = () => {
+let fetchLocation = () => {
   store.dispatch(startLocationFetch());
 
   axios.get('http://ipinfo.io').then(function(res) {
-    var loc = res.data.loc;
-    var baseUrl = `http://maps.google.com?q=${loc}`;
+    let loc = res.data.loc;
+    let baseUrl = `http://maps.google.com?q=${loc}`;
 
     store.dispatch(completeLocationFetch(baseUrl));
   });
 }
 
 store.subscribe(() => {
-  var state = store.getState();
+  let state = store.getState();
 
   if (state.map.isFetching) {
     document.getElementById('app').innerHTML = 'Loading...'
