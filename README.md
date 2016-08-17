@@ -4,7 +4,7 @@ React boilerplate
 
 Reducers are **pure functions**.
 - output is the same as input (predictable)
-- no side effects, can't pass any values outside the function etc..
+- no side effects, can't pass any values from outside the function etc..
 - no sync methods, callbacks., promises etc
 
 ```js
@@ -28,7 +28,7 @@ let reducer = (state = stateDefault, action) => {
 
 #### Multiple Reducers
 
-Break reducer in to more managebale small reducers
+Break reducer into more managable small reducers
 
 ```js
 var reducer = redux.combineReducers({
@@ -39,7 +39,7 @@ var reducer = redux.combineReducers({
 
 ```
 
-#### Subscribe fr changes
+#### Subscribe for changes
 
 Subscribe takes one argument which is callback that gets called when the state has been changed
 
@@ -82,3 +82,63 @@ store.dispatch(changeName('Anita'));
 ```
 
 #### Asynchronous actions
+
+```js
+var mapReducer = (state = {isFetching: false, url: null}, action) => {
+  switch (action.type) {
+  case 'START_LOCATION_FETCH':
+    return {
+      isFetching: false,
+      url: null
+    };
+  case 'COMPLETE_LOCATION_FETCH':
+    return {
+      isFetching: false,
+      url: action.url
+    };
+  default:
+    return state;
+  }
+}
+
+var startLocationFetch = () => {
+  return {
+    type: 'START_LOCATION_FETCH'
+  }
+}
+
+var completeLocationFetch = (url) => {
+  return {
+    type: 'COMPLETE_LOCATION_FETCH',
+    url
+  }
+}
+
+var fetchLocation = () => {
+  store.dispatch(startLocationFetch());
+
+  axios.get('http://ipinfo.io').then(function(res) {
+    var loc = res.data.loc;
+    var baseUrl = `http://maps.google.com?q=${loc}`;
+
+    store.dispatch(completeLocationFetch(baseUrl));
+  });
+}
+
+
+store.subscribe(() => {
+  var state = store.getState();
+
+  if (state.map.isFetching) {
+    document.getElementById('app').innerHTML = 'Loading...'
+  } else if(state.map.url) {
+    document.getElementById('app').innerHTML = `<a href="${state.map.url}" target="_blank">View your location</a>`
+  }
+  // document.getElementById('app').innerHTML = state.name;
+  console.log('New state', store.getState());
+});
+
+
+fetchLocation();
+
+```

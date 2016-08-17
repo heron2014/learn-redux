@@ -1,4 +1,5 @@
 var redux = require('redux');
+var axios = require('axios');
 
 // Name reducer and action generator
 // ----------------------
@@ -87,10 +88,55 @@ var removeMovie = (id) => {
   }
 };
 
+// Map reducer and action generator
+// ----------------------
+var mapReducer = (state = {isFetching: false, url: null}, action) => {
+  switch (action.type) {
+  case 'START_LOCATION_FETCH':
+    return {
+      isFetching: false,
+      url: null
+    };
+  case 'COMPLETE_LOCATION_FETCH':
+    return {
+      isFetching: false,
+      url: action.url
+    };
+  default:
+    return state;
+  }
+}
+
+var startLocationFetch = () => {
+  return {
+    type: 'START_LOCATION_FETCH'
+  }
+}
+
+var completeLocationFetch = (url) => {
+  return {
+    type: 'COMPLETE_LOCATION_FETCH',
+    url
+  }
+}
+
+var fetchLocation = () => {
+  store.dispatch(startLocationFetch());
+
+  axios.get('http://ipinfo.io').then(function(res) {
+    var loc = res.data.loc;
+    var baseUrl = `http://maps.google.com?q=${loc}`;
+
+    store.dispatch(completeLocationFetch(baseUrl));
+  });
+}
+
+
 var reducer = redux.combineReducers({
   name: nameReducer, //we tell redux that the state name will be manage by nameReducer
   hobbies: hobbiesReducer,
-  movies: moviesReducer
+  movies: moviesReducer,
+  map: mapReducer
 });
 
 var store = redux.createStore(reducer, redux.compose(
@@ -100,12 +146,19 @@ var store = redux.createStore(reducer, redux.compose(
 store.subscribe(() => {
   var state = store.getState();
 
-  document.getElementById('app').innerHTML = state.name;
+  if (state.map.isFetching) {
+    document.getElementById('app').innerHTML = 'Loading...'
+  } else if(state.map.url) {
+    document.getElementById('app').innerHTML = `<a href="${state.map.url}" target="_blank">View your location</a>`
+  }
+  // document.getElementById('app').innerHTML = state.name;
   console.log('New state', store.getState());
 });
 
 var currentState = store.getState();
 console.log('current state', currentState);
+
+fetchLocation();
 
 store.dispatch(changeName('Anita'));
 
