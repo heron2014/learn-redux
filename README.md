@@ -194,6 +194,7 @@ export const nameReducer = (state, action) {
 }
 
  ```
+
 - store
 
 ```js
@@ -216,7 +217,8 @@ export const configure = () => {
 }
 
 ```
--example.js
+
+- example.js
 
 - require actions, store
 - subscribe
