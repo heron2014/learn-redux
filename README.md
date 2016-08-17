@@ -1,4 +1,4 @@
-React boilerplate
+Redux notes (WIP)
 
 #### Reducers
 
@@ -38,6 +38,24 @@ var reducer = redux.combineReducers({
 });
 
 ```
+#### Actions
+- pure plain object, with required property **type**
+
+```js
+export var changeName = (name) => {
+  return {
+    type: 'CHANGE_NAME',
+    name
+  }
+};
+```
+
+- dispatch an action
+
+```js
+store.dispatch(changeName('Anita'));
+
+```
 
 #### Subscribe for changes
 
@@ -47,7 +65,6 @@ Subscribe takes one argument which is callback that gets called when the state h
 store.subscribe(() => {
   var state = store.getState();
 
-  // document.getElementById('app').innerHTML = state.name;
   console.log('New state', store.getState());
 });
 
@@ -81,7 +98,7 @@ store.dispatch(changeName('Anita'));
 
 ```
 
-#### Asynchronous actions
+#### Asynchronous actions (use redux-thunk)
 
 ```js
 var mapReducer = (state = {isFetching: false, url: null}, action) => {
@@ -125,7 +142,6 @@ var fetchLocation = () => {
   });
 }
 
-
 store.subscribe(() => {
   var state = store.getState();
 
@@ -142,3 +158,8 @@ store.subscribe(() => {
 fetchLocation();
 
 ```
+
+#### Redux-thunk
+
+We can use redux-thunk, which is middleware to add actions generator which returns functions. The reason we do that if the action is doing some asynchronous request and needs to dispatch action inside of it.
+Redux-thunk is a way to have your app use async actions - that is, ones that you start off but will complete 'later' - you'll then normally want to dispatch an action but the problem then is that the 'later' function doesn't have access to the dispatch method.  You can pass the dispatch method around manually, but redux-thunk provides a way of it being provided for you.  See the redux [docs](http://redux.js.org/docs/advanced/AsyncActions.html) and [stackoverflow](http://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559) for more info, but the video should be enough to get things started if/when you need it.
