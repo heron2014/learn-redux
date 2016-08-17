@@ -157,9 +157,67 @@ store.subscribe(() => {
 
 fetchLocation();
 
+// configure above code to use redux-thunk
+
 ```
 
 #### Redux-thunk
 
 We can use redux-thunk, which is middleware to add actions generator which returns functions. The reason we do that if the action is doing some asynchronous request and needs to dispatch action inside of it.
 Redux-thunk is a way to have your app use async actions - that is, ones that you start off but will complete 'later' - you'll then normally want to dispatch an action but the problem then is that the 'later' function doesn't have access to the dispatch method.  You can pass the dispatch method around manually, but redux-thunk provides a way of it being provided for you.  See the redux [docs](http://redux.js.org/docs/advanced/AsyncActions.html) and [stackoverflow](http://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559) for more info, but the video should be enough to get things started if/when you need it.
+
+### Restructure project
+
+```
+├── actions                  
+├── reducers                                 
+├── store                    
+      |__ configureStore.js
+└── example.js                     
+```
+
+ - actions
+
+ ```js
+export const changeName = (name) => {
+  return {
+    ...
+  }
+}
+ ```
+
+ - reducers
+
+ ```js
+export const nameReducer = (state, action) {
+
+}
+
+ ```
+- store
+
+```js
+// require redux, redux-thunk (if needed)
+// const {nameReducer} = require('../reducers')
+
+export const configure = () => {
+  let reducer = redux.combineReducers({
+    name: nameReducer
+    ...
+  });
+  let store = redux.createStore(reducer, redux.compose(
+    // add middleware redux-thunk
+    redux.applyMiddleware(thunk),
+    //add support for redux-dev-tool
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  ));
+
+  return store;
+}
+
+```
+-example.js
+
+- require actions, store
+- subscribe
+- dispatch actions
